@@ -1,0 +1,24 @@
+.App {
+  text-align: center;
+}
+div.box {
+  display: inline-block;
+  width: 400px;
+  border: 1px solid black;
+  margin: 30px 0;
+  text-align: left;
+  padding: 5px 30px;
+}
+.box p:first-of-type {
+  margin-top: 3px;
+  margin-bottom: 30px;
+}
+h4 {
+  font-size: 2rem;
+  margin-bottom: 0;
+}
+h6 {
+  font-weight: bold;
+  font-size: 1rem;
+  margin-bottom: 0px;
+}
