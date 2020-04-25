@@ -2,7 +2,7 @@ import React from 'react';
 
 const Button = ({ handelButton }) => {
 	return (
-		<div className="searchInput">
+		<div className="searchButton">
 			<button type="submit" value="submit" onClick={handelButton}>
 				Search
 			</button>

@@ -1,61 +1,65 @@
-import React, { useState, useEffect } from 'react';
-import './App.css';
+import React, { useState } from 'react';
 import WeatherCard from './components/WeatherCard.js';
 import Button from './components/Button.js';
-import Input from './components/Input.js';
+import Search from './components/Search.js';
+import './App.css';
 
 const APIKEY = process.env.REACT_APP_OPENWEATHERMAP_API_KEY;
 const App = () => {
-	const [ state, setState ] = useState('');
-	const [ city, setCity ] = useState('Amsterdam');
+	
+	const [ cities, setCities ] = useState([]);
+	const [ message, setMessage ] = useState(' No cities searched for yet... ');
 	const [ isLoading, setLoading ] = useState(true);
 	const [ error, setError ] = useState(false);
 	const [ Value, setValue ] = useState('');
 
-	useEffect(
-		() => {
-			fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${APIKEY}`)
-				.then((res) => res.json())
-				.then((data) => {
-					setState(data);
-					setLoading(false);
-				})
-				.catch((err) => {
-					console.log('error', err);
-					setError(true);
-					setLoading(false);
-				});
-		},
-		[ city ]
-	);
+	const getCity = async (city) => {
+		setLoading(true);
+		setMessage('');
+		try {
+			const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${APIKEY}`);
+			if (response.ok) {
+				const data = await response.json();
+				const listItems = cities.filter((item) => item.id !== data.id);
+				setCities([ data, ...listItems ]);
+				setLoading(false);
+				setError('');
+			} else {
+				setError('City name not found...');
+				setLoading(false);
+			}
+		} catch (err) {
+			console.log(err);
+			setError('Something went wrong...');
+		}
+	};
 	const handelSearch = (e) => {
 		setValue(e.target.value);
 	};
-	const handleButton = () => {
-		setCity(Value);
+	const handleButton  = (e) => {
+		e.preventDefault();
+		getCity(Value);
+	}
+	const deleteItem = (id) => {
+		const filterd = cities.filter((city) => city.id !== id);
+		setCities(filterd);
 	};
 
 	return (
 		<div className="App" >
-			{error && <h1>Something went wrong</h1>}
-			{isLoading && <h1>{isLoading && 'Loading...'}</h1>}
+			
 			<h1>Weather</h1>
+			
+			<h3 className="message">{message}</h3>
 			<div className="display-weather">
-				<Input handelSearch={handelSearch} />
-				<Button handelButton={handleButton} />
+			<Search handelSearch={handelSearch} />
+			 <Button handelButton={handleButton} />
+			
 			</div>
-			{state && (
-				<WeatherCard
-					name={state ? state.name : ''}
-					country={state.sys ? state.sys.country : <h3> No cities searched for yet</h3>}
-					main={state.weather ? state.weather[0].main : ''}
-					description={state.weather ? state.weather[0].description : ''}
-					minTemp={state.main ? state.main.temp_min : ''}
-					maxTemp={state.main ? state.main.temp_max : ''}
-					lat={state.coord ? state.coord.lat : ''}
-					lon={state.coord ? state.coord.lon : ''}
-				/>
-			)}
+
+			{error && <h2 className="message">{error}</h2>}
+			{isLoading && <h1> Loading...</h1>}
+			<ul>{cities.map((city) => <WeatherCard props={city} key={city.id} deleteItem={deleteItem} />)}</ul>
 		</div>
 	);
 };

@@ -1,25 +1,28 @@
 import React from 'react';
 
-const WeatherCard = ({ name, country, main, description, minTemp, maxTemp, lat, lon }) => {
+const WeatherCard = ({ props, deleteItem }) => {
 	const kelvinToCelcius = (kelvin) => {
 		return (kelvin - 273).toFixed(2);
 	};
 	return (
 		<div className="main">
 			<h3>
-				{name} {country}
+				{props.name} {props.sys.country}
 			</h3>
+			<button className="deleteBtn" onClick={() => deleteItem(props.id)}>
+				X
+			</button>
 			<div className="weatherMain">
-				<h5>{main}</h5>
-				<p> {description} </p>
+				<h5>{props.weather[0].main}</h5>
+				<p> {props.weather[0].description} </p>
 			</div>
-			<p> min temp: {kelvinToCelcius(minTemp)} °C </p>
-			<p> max temp: {kelvinToCelcius(maxTemp)} °C </p>
+
+			<p> min temp: {kelvinToCelcius(props.main.temp_min)} °C </p>
+			<p> max temp: {kelvinToCelcius(props.main.temp_max)} °C </p>
 			<p>
-				location: {lat} {lon}
+				location: {props.coord.lat} {props.coord.lon}
 			</p>
 		</div>
 	);
 };
-
 export default WeatherCard;

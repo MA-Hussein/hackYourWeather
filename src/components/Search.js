@@ -1,11 +1,11 @@
 import React from 'react';
 
-const Input = ({ handelSearch }) => {
+const Search = ({ handelSearch }) => {
 	return (
-		<div className="searchInput">
+		<div className="searchButton">
 			<input type="text" onChange={handelSearch} placeholder="Search City..." />
 		</div>
 	);
 };
 
-export default Input;
+export default Search;
