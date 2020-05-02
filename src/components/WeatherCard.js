@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const WeatherCard = ({ props, deleteItem }) => {
 	const kelvinToCelcius = (kelvin) => {
@@ -6,9 +7,11 @@ const WeatherCard = ({ props, deleteItem }) => {
 	};
 	return (
 		<div className="main">
+			<Link to={`/${props.id}`}>
 			<h3>
 				{props.name} {props.sys.country}
 			</h3>
+			</Link>
 			<button className="deleteBtn" onClick={() => deleteItem(props.id)}>
 				X
 			</button>

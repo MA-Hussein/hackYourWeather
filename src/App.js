@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import WeatherCard from './components/WeatherCard.js';
 import Button from './components/Button.js';
 import Search from './components/Search.js';
+import Recharts from './components/WeatherChart.js';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import './App.css';
 
 const APIKEY = process.env.REACT_APP_OPENWEATHERMAP_API_KEY;
@@ -11,7 +13,7 @@ const App = () => {
 	const [ message, setMessage ] = useState(' No cities searched for yet... ');
 	const [ isLoading, setLoading ] = useState(true);
 	const [ error, setError ] = useState(false);
-	const [ Value, setValue ] = useState('');
+	const [ value, setValue ] = useState('');
 
 	const getCity = async (city) => {
 		setLoading(true);
@@ -38,7 +40,7 @@ const App = () => {
 	};
 	const handleButton  = (e) => {
 		e.preventDefault();
-		getCity(Value);
+		getCity(value);
 	}
 	const deleteItem = (id) => {
 		const filterd = cities.filter((city) => city.id !== id);
@@ -46,21 +48,31 @@ const App = () => {
 	};
 
 	return (
+		<Router>
 		<div className="App" >
-			
 			<h1>Weather</h1>
+			<Switch>
+			<Route exact path="/">
 			
-			<h3 className="message">{message}</h3>
-			<div className="display-weather">
-			<Search handelSearch={handelSearch} />
-			 <Button handelButton={handleButton} />
-			
-			</div>
+			    <h3 className="message">{message}</h3>
+			    <div className="display-weather">
+			    <Search handelSearch={handelSearch} />
+		        <Button handelButton={handleButton} />
+			   </div>
 
-			{error && <h2 className="message">{error}</h2>}
-			{isLoading && <h1> Loading...</h1>}
-			<ul>{cities.map((city) => <WeatherCard props={city} key={city.id} deleteItem={deleteItem} />)}</ul>
+			    {error && <h2 className="message">{error}</h2>}
+			    {isLoading && <h1> Loading...</h1>}
+			    <ul>{cities.map((city) => <WeatherCard props={city} key={city.id} deleteItem={deleteItem} />)}</ul>
+			</Route>
+
+			<Route path="/:id">
+			    <Recharts />
+		    </Route>
+
+
+			</Switch>
 		</div>
+		</Router>
 	);
 };
 
